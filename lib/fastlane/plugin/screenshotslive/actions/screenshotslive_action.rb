@@ -17,7 +17,7 @@ module Fastlane
         client = Screenshotslive::ApiClient.new(api_key: api_key, base_url: base_url)
 
         result = client.render(yaml_config: yaml_config)
-        job_id = result.dig("data", "id") || result["id"]
+        job_id = result.dig("data", "jobId") || result.dig("data", "id")
         UI.message("Render job dispatched: #{job_id}")
 
         UI.message("Waiting for render to complete...")

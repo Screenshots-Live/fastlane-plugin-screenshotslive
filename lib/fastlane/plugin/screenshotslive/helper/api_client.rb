@@ -5,15 +5,14 @@ module Fastlane
   module Screenshotslive
     class ApiClient
       BASE_URL = "https://api.screenshots.live"
-      RENDER_PATH = "/render-api"
+      RENDER_PATH = "/render/api"
+      POLL_PATH_PREFIX = "/render/get-render/"
       POLL_INTERVAL = 3
       MAX_POLL_ATTEMPTS = 200
 
       def initialize(api_key:, base_url: nil)
         @api_key = api_key
         @conn = Faraday.new(url: base_url || BASE_URL) do |f|
-          f.request :multipart
-          f.request :url_encoded
           f.adapter Faraday.default_adapter
         end
       end
@@ -21,8 +20,8 @@ module Fastlane
       def render(yaml_config:)
         response = @conn.post(RENDER_PATH) do |req|
           req.headers["Authorization"] = "Bearer #{@api_key}"
-          req.headers["Content-Type"] = "application/json"
-          req.body = JSON.generate({ yamlConfig: yaml_config })
+          req.headers["Content-Type"] = "text/yaml"
+          req.body = yaml_config
         end
 
         unless response.success?
@@ -41,7 +40,7 @@ module Fastlane
             raise "Render job #{job_id} timed out after #{MAX_POLL_ATTEMPTS * POLL_INTERVAL}s"
           end
 
-          response = @conn.get("/render-jobs/#{job_id}") do |req|
+          response = @conn.get("#{POLL_PATH_PREFIX}#{job_id}") do |req|
             req.headers["Authorization"] = "Bearer #{@api_key}"
           end
 
