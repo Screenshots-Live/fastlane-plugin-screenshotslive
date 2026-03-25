@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "faraday", "~> 2.14"
   spec.add_dependency "faraday-multipart", "~> 1.1"
-  spec.add_dependency "rubyzip", "~> 2.4"
+  spec.add_dependency "rubyzip", ">= 2.0", "< 3.0"
 
   spec.add_development_dependency "fastlane", "~> 2.200", ">= 2.200.0"
   spec.add_development_dependency "rspec", "~> 3.0"
